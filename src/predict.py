@@ -4,12 +4,17 @@ from torchvision.transforms.v2.functional import to_dtype
 from torch import sigmoid
 import argparse
 import torch
+import os
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def main(image_path: str):
+    weights_path = "Lait-au-pole/chestxpert"
+    local_weights_path = "./model"
+    if os.path.exists(local_weights_path):
+        weights_path = local_weights_path
     with torch.no_grad():
-        model = ChestXRayModel.from_pretrained("Lait-au-pole/chestxpert").to(device)
+        model = ChestXRayModel.from_pretrained(weights_path).to(device)
         image = decode_image(image_path, 'GRAY').to(device)
         pred = model.predict(image)
         return pred
