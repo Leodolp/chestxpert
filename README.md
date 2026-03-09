@@ -2,7 +2,7 @@
 
 This is a personnal MLOps learning project.
 
-__Project Structure__
+## Project Structure  
 ```
 chestxpert/
 ├── README.md
@@ -16,7 +16,23 @@ chestxpert/
     └── messy exploration notebooks
 ```
 
-__Usage example__:
+## Usage examples
+__Command line:__  
 ``` 
-python predict.py --image ..\data\00000001_000_Cardiomegalie.png
+python src/predict.py --image data/00000001_000_Cardiomegalie.png
 ```
+__With docker:__  
+Pull image from docker hub  
+```
+docker push leopolp/chestxpert:latest
+```
+_OR_  
+Build the image from Dockerfile  
+```
+docker build -f docker/Dockerfile.cpu -t chestxpert:latest .
+```
+then  
+```
+docker run -v ./data/00000001_000_Cardiomegalie.png:/app/data/00000001_000_Cardiomegalie.png:ro chestxpert --image data/00000001_000_Cardiomegalie.png
+```
+to run the provided example image  
