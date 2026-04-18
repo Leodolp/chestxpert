@@ -11,16 +11,14 @@ def main(image_path: str):
     with torch.no_grad():
         model = ChestXRayModel.from_pretrained("Lait-au-pole/chestxpert").to(device)
         image = decode_image(image_path, 'GRAY').to(device)
-        image = to_dtype(image, torch.float32, scale=True).unsqueeze(0)
-        logits = model(image)
-        pred = sigmoid(logits).cpu().numpy()
+        pred = model.predict(image)
         return pred
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("python predict.py")
     parser.add_argument("--image", "-i", help="path to to the image for pathologie prediction", type=str)
     args = parser.parse_args()
-    pred = main(args.image)[0]
+    pred = main(args.image)
     labels = ["Atelectasis","Cardiomegaly","Consolidation",
           "Edema","Effusion","Emphysema",
           "Fibrosis","Hernia","Infiltration",

@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torchvision
+from torchvision.transforms import v2
 import torch
 from huggingface_hub import PyTorchModelHubMixin 
 
@@ -18,7 +19,22 @@ class ChestXRayModel(nn.Module, PyTorchModelHubMixin,repo_url="chestxpert",
         self.classifier = torch.nn.Linear(self.backbone.classifier[1].in_features, num_classes)
         self.backbone.classifier = self.backbone.classifier[0]
         
-    def forward(self, x):
+        self.transforms = v2.Compose([
+            v2.ToDtype(torch.float32, scale=True),
+            v2.Resize(224),
+            v2.Normalize(mean=(0.5,), std=(0.5,))
+        ])
+
+    def forward(self, x: torch.Tensor):
         x = self.backbone(x)
         x = self.classifier(x)
         return x
+    
+    def predict(self, image: torch.Tensor) -> list: 
+        if len(image.shape) < 4:
+            image = image.unsqueeze(0)
+        image = self.transforms(image)
+        logits = self.forward(image)
+        pred = torch.sigmoid(logits).cpu().numpy()
+        pred = pred.squeeze().tolist()
+        return pred
