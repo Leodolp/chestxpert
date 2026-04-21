@@ -31,6 +31,7 @@ class ChestXRayModel(nn.Module, PyTorchModelHubMixin,repo_url="chestxpert",
         return x
     
     def predict(self, image: torch.Tensor) -> list: 
+        self.eval()
         if len(image.shape) < 4:
             image = image.unsqueeze(0)
         image = self.transforms(image)
