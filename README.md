@@ -24,7 +24,7 @@ python src/predict.py --image data/00000001_000_Cardiomegalie.png
 __With docker:__  
 Pull image from docker hub  
 ```
-docker push leopolp/chestxpert:latest
+docker pull leopolp/chestxpert:latest
 ```
 _OR_  
 Build the image from Dockerfile  
